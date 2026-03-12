@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 
+const { extractTextFromPDF } = require("../controllers/pdfController");
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, "uploads/");
@@ -12,13 +14,17 @@ const storage = multer.diskStorage({
     },
 })
 
-const upload = multer({storage});
-
-router.post("/upload", upload.single("assignment"), (req, res) => {
-    res.json({
-        message: "Assignment uploaded successfully",
-        file: req.file,
-    });
+const upload = multer({
+    storage,
+    fileFilter: (req, file, cb) => {
+        if(file.mimetype === "application/pdf") {
+            cb(null, true);
+        } else {
+            cb(new Error("Only PDF files are allowed"), false);
+        }
+    }
 });
+
+router.post("/upload", upload.single("assignment"), extractTextFromPDF);
 
 module.exports = router;
