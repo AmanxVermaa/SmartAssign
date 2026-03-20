@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 
-const { extractTextFromPDF } = require("../controllers/pdfController");
+const { processAssignment } = require("../controllers/pdfController");
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -25,6 +25,6 @@ const upload = multer({
     }
 });
 
-router.post("/upload", upload.single("assignment"), extractTextFromPDF);
+router.post("/upload", upload.single("assignment"), processAssignment );
 
 module.exports = router;
