@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 
 const { processAssignment } = require("../controllers/pdfController");
+const { testGeminiAPI } = require("../controllers/testController");
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {

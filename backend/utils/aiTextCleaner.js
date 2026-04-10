@@ -1,8 +1,4 @@
-require('dotenv').config();
-const OpenAI = require("openai");
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const { chatSession } = require("../script/index");
 
 const cleanTextWithAI = async (rawText) => {
   try {
@@ -21,15 +17,8 @@ Text:
 "${rawText}"
 `;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4.1-mini",
-      messages: [
-        { role: "system", content: "You clean OCR text." },
-        { role: "user", content: prompt }
-      ],
-    });
-
-    return response.choices[0].message.content;
+    const result = await chatSession.sendMessage(prompt);
+    return result.response.text();
 
   } catch (error) {
     console.error(error);
