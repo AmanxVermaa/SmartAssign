@@ -1,8 +1,4 @@
-const { OpenAI } = require("openai");
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const { chatSession } = require("../script/index");
 
 const evaluateAnswer = async (req, res) => {
   try {
@@ -35,18 +31,9 @@ Evaluate and return strictly in JSON format:
 }
 `;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4.1-mini",
-      messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      temperature: 0.3
-    });
+    const response = await chatSession.sendMessage(prompt);
 
-    let result = response.choices[0].message.content;
+    let result = response.response.text();
 
     try {
       result = JSON.parse(result);
