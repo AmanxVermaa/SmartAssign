@@ -22,7 +22,7 @@ const convertPDFtoImage = (pdfPath) => {
 
     exec(command, (error, stdout, stderr) => {
       if (error) {
-        console.error("❌ Conversion error:", error);
+        console.error(" Conversion error:", error);
         return reject(error);
       }
 
