@@ -27,6 +27,5 @@ const upload = multer({
 });
 
 router.post("/upload", upload.single("assignment"), processAssignment );
-router.get("/test-gemini", testGeminiAPI);
 
 module.exports = router;
