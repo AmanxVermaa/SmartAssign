@@ -2,6 +2,7 @@ const fs = require("fs");
 const pdfParse = require("pdf-parse");
 const Tesseract = require("tesseract.js");
 
+const Evaluations = require("../models/Evaluations");
 const { extractTextFromOCR } = require("../utils/ocr");
 const { chatSession } = require("../script/index");
 
@@ -150,9 +151,21 @@ Return ONLY valid JSON (no explanation, no markdown):
       });
     }
 
+    // SAVE TO DB
+    const saved = await Evaluations.create({
+      studentText,
+      teacherText,
+
+      aiScore: result.score,
+      aiFeedback: result.feedback,
+      similarity: result.similarity,
+      plagiarism: result.plagiarism
+    });
+
     res.json({
       message: "Full evaluation complete",
-      result
+      result,
+      id: saved._id
     });
 
   } catch (error) {

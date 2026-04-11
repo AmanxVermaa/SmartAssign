@@ -1,0 +1,21 @@
+const mongoose = require("mongoose");
+
+const evaluationSchema = new mongoose.Schema({
+    studentText: String,
+    teacherText: String,
+
+    aiScore: Number,
+    aiFeedback: String,
+    similarity: Number,
+    plagiarism: Number,
+
+    finalScore: Number,
+    finalFeedback: String,
+    isModified: {
+        type: Boolean,
+        default: false
+    }
+
+}, {timestamps: true});
+
+module.exports = mongoose.model("Evaluation", evaluationSchema);

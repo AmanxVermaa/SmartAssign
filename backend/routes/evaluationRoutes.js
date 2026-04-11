@@ -26,4 +26,28 @@ router.post(
   fullEvaluate
 );
 
+router.put("/override/:id", async (req, res) => {
+  try {
+    const { score, feedback } = req.body;
+
+    const updated = await Evaluation.findByIdAndUpdate(
+      req.params.id,
+      {
+        finalScore: score,
+        finalFeedback: feedback,
+        isModified: true
+      },
+      { new: true }
+    );
+
+    res.json({
+      message: "Evaluation overridden",
+      data: updated
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: "Override failed" });
+  }
+});
+
 module.exports = router;
