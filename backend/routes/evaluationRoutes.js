@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 
+const Evaluations = require("../models/Evaluations");
 const { evaluateAnswer, fullEvaluate } = require("../controllers/evaluationController");
 
 const storage = multer.diskStorage({
@@ -30,18 +31,18 @@ router.put("/override/:id", async (req, res) => {
   try {
     const { score, feedback } = req.body;
 
-    const updated = await Evaluation.findByIdAndUpdate(
+    const updated = await Evaluations.findByIdAndUpdate(
       req.params.id,
       {
         finalScore: score,
         finalFeedback: feedback,
-        isModified: true
+        isUpdated: true
       },
       { new: true }
     );
 
     res.json({
-      message: "Evaluation overridden",
+      message: "Evaluation overridden", 
       data: updated
     });
 

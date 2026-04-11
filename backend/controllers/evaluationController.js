@@ -6,6 +6,19 @@ const Tesseract = require("tesseract.js");
 const Evaluations = require("../models/Evaluations");
 const { extractTextFromOCR } = require("../utils/ocr");
 
+async function summarizeText(model, text) {
+  const prompt = `
+Summarize the following text in a concise way for evaluation.
+Focus on key concepts, important points, and meaning.
+
+Text:
+${text}
+`;
+
+  const response = await chatSession.sendMessage(prompt);
+  return response.response.text();
+}
+
 const evaluateAnswer = async (req, res) => {
   try {
     const { studentAnswer, teacherAnswer } = req.body;
@@ -103,6 +116,13 @@ const fullEvaluate = async (req, res) => {
     const studentText = await extractText(studentPath);
     const teacherText = await extractText(teacherPath);
 
+    const safeStudentText = studentText.slice(0, 8000);
+    const safeTeacherText = teacherText.slice(0, 8000);
+
+    // SUMMARIZE
+    const studentSummary = await summarizeText(chatSession, safeStudentText);
+    const teacherSummary = await summarizeText(chatSession, safeTeacherText);
+
     console.log("Student Text:", studentText.slice(0, 100));
     console.log("Teacher Text:", teacherText.slice(0, 100));
 
@@ -112,10 +132,10 @@ You are an AI teacher.
 Compare the student's answer with the teacher's answer.
 
 Teacher Answer:
-${teacherText}
+${teacherSummary}
 
 Student Answer:
-${studentText}
+${studentSummary}
 
 IMPORTANT: 
 - If the student's answer matches the teacher's answer, it should be considered correct.
