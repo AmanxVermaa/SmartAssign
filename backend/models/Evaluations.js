@@ -11,7 +11,7 @@ const evaluationSchema = new mongoose.Schema({
 
     finalScore: Number,
     finalFeedback: String,
-    isModified: {
+    isUpdated: {
         type: Boolean,
         default: false
     }

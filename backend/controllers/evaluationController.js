@@ -1,10 +1,10 @@
+const { chatSession } = require("../script/index");
 const fs = require("fs");
 const pdfParse = require("pdf-parse");
 const Tesseract = require("tesseract.js");
 
 const Evaluations = require("../models/Evaluations");
 const { extractTextFromOCR } = require("../utils/ocr");
-const { chatSession } = require("../script/index");
 
 const evaluateAnswer = async (req, res) => {
   try {

@@ -6,6 +6,9 @@ const uploadRoutes = require("./routes/uploadRoutes");
 
 const evaluationRoutes = require("./routes/evaluationRoutes");
 
+const connectDB = require("./config/db");
+connectDB();
+
 const app = express();
 
 app.use(cors());
@@ -13,9 +16,6 @@ app.use(express.json());
 
 app.use("/api", uploadRoutes);
 app.use("/api", evaluationRoutes);
-
-const connectDB = require("./config/db");
-connectDB();
 
 app.get("/", (req, res) => {
     res.send("SmartAssign-AI Based Assignment Evaluation System Backend running");
