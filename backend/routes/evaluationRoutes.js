@@ -33,8 +33,11 @@ router.put("/override/:id", auth, async (req, res) => {
   try {
     const { score, feedback } = req.body;
 
-    const updated = await Evaluations.findByIdAndUpdate(
-      req.params.id,
+    const updated = await Evaluations.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        teacherId: req.user.id
+      },
       {
         finalScore: score,
         finalFeedback: feedback,
@@ -55,7 +58,9 @@ router.put("/override/:id", auth, async (req, res) => {
 
 router.get("/evaluations", auth, async (req, res) => {
   try {
-    const data = await Evaluations.find().sort({ createdAt: -1 });
+    const data = await Evaluations.find({
+      teacherId: req.user.id
+    }).sort({ createdAt: -1 });
 
     res.json({
       count: data.length,
@@ -73,7 +78,8 @@ router.get("/evaluations/filter", auth, async (req, res) => {
     const { minScore } = req.query;
 
     const data = await Evaluations.find({
-      finalScore: { $gte: Number(minScore) }
+      teacherId: req.user.id,
+      ...(minScore && {finalScore: { $gte: Number(minScore) } })
     });
 
     res.json({
@@ -89,7 +95,10 @@ router.get("/evaluations/filter", auth, async (req, res) => {
 
 router.get("/evaluations/:id", auth, async (req, res) => {
   try {
-    const data = await Evaluations.findById(req.params.id);
+    const data = await Evaluations.findOne({
+      _id: req.params.id,
+      teacherId: req.user.id
+    });
 
     if (!data) {
       return res.status(404).json({ error: "Not found" });
@@ -105,7 +114,16 @@ router.get("/evaluations/:id", auth, async (req, res) => {
 
 router.delete("/evaluations/:id", auth, async (req, res) => {
   try {
-    await Evaluations.findByIdAndDelete(req.params.id);
+    const deleted = await Evaluations.findOneAndDelete({
+      _id: req.params.id,
+      teacherId: req.user.id
+    });
+
+    if (!deleted) {
+      return res.status(404).json({
+        error: "Not found or unauthorized"
+      });
+    }
 
     res.json({
       message: "Deleted successfully"

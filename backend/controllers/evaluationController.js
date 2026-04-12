@@ -179,7 +179,9 @@ Return ONLY valid JSON (no explanation, no markdown):
       aiScore: result.score,
       aiFeedback: result.feedback,
       similarity: result.similarity,
-      plagiarism: result.plagiarism
+      plagiarism: result.plagiarism,
+
+      teacherId: req.user.id
     });
 
     res.json({
