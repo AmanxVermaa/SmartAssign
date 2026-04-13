@@ -127,27 +127,27 @@ const fullEvaluate = async (req, res) => {
     console.log("Teacher Text:", teacherText.slice(0, 100));
 
     const prompt = `
-You are an AI teacher.
+You are a strict AI teacher.
 
 Compare the student's answer with the teacher's answer.
 
 Teacher Answer:
-${teacherSummary}
+${safeTeacherText}
 
 Student Answer:
-${studentSummary}
+${safeStudentText}
 
-IMPORTANT: 
-- If the student's answer matches the teacher's answer, it should be considered correct.
-- Give high score (18-20) for correct answers even if similar.
-- "similarity" = how correct the answer is compared to teacher.
-- "plagiarism" = only measure if the student copied wording directly (but do NOT reduce score because of it).
-- Score should reflect correctness, not copying.
+IMPORTANT RULES:
+- If the student's answer is from a completely different topic or document, give LOW score (0-5).
+- DO NOT assume similarity based on general words.
+- Check if BOTH answers talk about SAME TOPIC.
+- If topics are different (e.g., resume vs project synopsis), mark it incorrect.
+- Be strict in evaluation.
 
-Return ONLY valid JSON (no explanation, no markdown):
+Return ONLY valid JSON:
 
 {
-  "score": number (out of 20),
+  "score": number,
   "feedback": "short feedback",
   "similarity": number (0-100),
   "plagiarism": number (0-100)

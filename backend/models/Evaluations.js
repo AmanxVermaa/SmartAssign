@@ -14,8 +14,11 @@ const evaluationSchema = new mongoose.Schema({
     isUpdated: {
         type: Boolean,
         default: false
+    },
+    teacherId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Teacher"
     }
-
 }, {timestamps: true});
 
 module.exports = mongoose.model("Evaluations", evaluationSchema);
