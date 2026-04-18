@@ -84,6 +84,7 @@ export default function Signup() {
         <input
           type="text"
           placeholder="Name"
+          maxLength={50}
           onChange={(e) => setName(e.target.value)}
           className="w-full mb-4 p-3 rounded-lg 
                      bg-white/10 text-white 
