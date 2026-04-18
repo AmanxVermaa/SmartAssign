@@ -65,135 +65,188 @@ export default function History() {
     }
   };
 
-  const handleSort = () => {
-    let sortedData = [...data];
+const handleSort = (type) => {
+  let sortedData = [...data];
 
-    if (sortType === "high") {
+  switch (type) {
+    case "high":
       sortedData.sort(
-        (a, b) => (b.finalScore || b.aiScore) - (a.finalScore || a.aiScore),
+        (a, b) => (b.finalScore || b.aiScore) - (a.finalScore || a.aiScore)
       );
-    }
+      break;
 
-    if (sortType === "low") {
+    case "low":
       sortedData.sort(
-        (a, b) => (a.finalScore || a.aiScore) - (b.finalScore || b.aiScore),
+        (a, b) => (a.finalScore || a.aiScore) - (b.finalScore || b.aiScore)
       );
-    }
+      break;
 
-    if (sortType === "latest") {
-      sortedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    }
+    case "latest":
+      sortedData.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+      break;
 
-    if (sortType === "oldest") {
-      sortedData.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-    }
+    case "oldest":
+      sortedData.sort(
+        (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+      );
+      break;
 
-    setData(sortedData);
-  };
+    default:
+      return;
+  }
+
+  setData(sortedData);
+};
 
   return (
-    <div>
-      <h1>Evaluation History 📊</h1>
+  <div className="min-h-screen p-6 
+                  bg-[linear-gradient(135deg,#0f172a,#020617,#000000)] text-white">
 
-      <div style={{ marginBottom: "20px" }}>
-        <input
-          type="number"
-          placeholder="Min Score"
-          value={minScore}
-          onChange={(e) => setMinScore(e.target.value)}
-        />
+    <h1 className="text-3xl font-bold mb-6">
+      Evaluation History 📊
+    </h1>
 
-        <button onClick={handleFilter} style={{ marginLeft: "10px" }}>
-          Apply Filter 🔍
-        </button>
+    {/* 🔧 FILTER + SORT BAR */}
+    <div className="flex flex-wrap gap-3 mb-6">
 
-        <button onClick={fetchData} style={{ marginLeft: "10px" }}>
-          Reset 🔄
-        </button>
-      </div>
+      <input
+        type="number"
+        placeholder="Min Score"
+        value={minScore}
+        onChange={(e) => setMinScore(e.target.value)}
+        className="p-2 rounded bg-white/10 border border-white/10"
+      />
 
-      <div style={{ marginBottom: "20px" }}>
-        <select onChange={(e) => setSortType(e.target.value)}>
-          <option value="">Sort By</option>
-          <option value="high">Highest Score</option>
-          <option value="low">Lowest Score</option>
-          <option value="latest">Latest</option>
-          <option value="oldest">Oldest</option>
-        </select>
+      <button
+        onClick={handleFilter}
+        className="px-4 py-2 bg-blue-500 rounded hover:bg-blue-600 transition"
+      >
+        Filter 🔍
+      </button>
 
-        <button onClick={handleSort} style={{ marginLeft: "10px" }}>
-          Apply Sort 🔃
-        </button>
+      <select
+        onChange={(e) => handleSort(e.target.value)}
+        className="p-2 rounded-lg 
+                  bg-[#020617] text-white 
+                  border border-white/20
+                  focus:outline-none focus:ring-2 focus:ring-blue-500
+                  cursor-pointer"
+      >
+        <option value="" className="bg-[#020617] text-white">
+          Sort By
+        </option>
+        <option value="high" className="bg-[#020617]">
+          Highest Score
+        </option>
+        <option value="low" className="bg-[#020617]">
+          Lowest Score
+        </option>
+        <option value="latest" className="bg-[#020617]">
+          Latest
+        </option>
+        <option value="oldest" className="bg-[#020617]">
+          Oldest
+        </option>
+      </select>
 
-        <button onClick={fetchData} style={{ marginLeft: "10px" }}>
-          Reset 🔄
-        </button>
-      </div>
+      <button
+        onClick={handleSort}
+        className="px-4 py-2 bg-green-500 rounded hover:bg-green-600"
+      >
+        Apply Sort 🔃
+      </button>
+
+      <button
+        onClick={fetchData}
+        className="px-4 py-2 bg-gray-500 rounded hover:bg-gray-600"
+      >
+        Reset 🔄
+      </button>
+
+    </div>
+
+    {/* 📦 CARDS GRID */}
+    <div className="grid md:grid-cols-2 gap-6">
+
       {data.map((item) => (
         <div
           key={item._id}
-          style={{
-            border: "1px solid white",
-            margin: "10px",
-            padding: "10px",
-          }}
+          className="bg-white/5 backdrop-blur-lg border border-white/10 
+                     rounded-2xl p-5
+                     hover:scale-105 transition duration-300 shadow-md"
         >
+
           <p>
-            <b>Score:</b> {item.finalScore || item.aiScore}
-          </p>
-          <p>
-            <b>Feedback:</b> {item.finalFeedback || item.aiFeedback}
-          </p>
-          <p>
-            <b>Similarity:</b> {item.similarity}
-          </p>
-          <p>
-            <b>Plagiarism:</b> {item.plagiarism}
+            <b>Score:</b>{" "}
+            <span className="text-green-400">
+              {item.finalScore || item.aiScore}
+            </span>
           </p>
 
-          {/* 🔥 OVERRIDE BUTTON */}
-          <button
-            onClick={() => {
-              setEditId(item._id);
-              setNewScore(item.finalScore || item.aiScore);
-              setNewFeedback(item.finalFeedback || item.aiFeedback);
-            }}
-          >
-            Override ✏️
-          </button>
+          <p><b>Similarity:</b> {item.similarity}%</p>
+          <p><b>Plagiarism:</b> {item.plagiarism}%</p>
 
-          <button
-            onClick={() => handleDelete(item._id)}
-            style={{ marginLeft: "10px" }}
-          >
-            Delete 🗑️
-          </button>
-          {/* 🔥 CONDITIONAL EDIT FORM */}
+          <p className="mt-2 text-sm text-gray-300">
+            {item.finalFeedback || item.aiFeedback}
+          </p>
+
+          {/* ACTION BUTTONS */}
+          <div className="mt-4 flex gap-2">
+
+            <button
+              onClick={() => {
+                setEditId(item._id);
+                setNewScore(item.finalScore || item.aiScore);
+                setNewFeedback(item.finalFeedback || item.aiFeedback);
+              }}
+              className="px-3 py-1 bg-blue-500 rounded hover:bg-blue-600"
+            >
+              Edit ✏️
+            </button>
+
+            <button
+              onClick={() => handleDelete(item._id)}
+              className="px-3 py-1 bg-red-500 rounded hover:bg-red-600"
+            >
+              Delete 🗑️
+            </button>
+
+          </div>
+
+          {/* ✏️ EDIT BOX */}
           {editId === item._id && (
-            <div style={{ marginTop: "10px" }}>
+            <div className="mt-4">
+
               <input
                 type="number"
                 value={newScore}
                 onChange={(e) => setNewScore(e.target.value)}
-                placeholder="New Score"
+                className="w-full mb-2 p-2 rounded bg-white/10"
               />
-              <br />
-              <br />
 
               <input
                 type="text"
                 value={newFeedback}
                 onChange={(e) => setNewFeedback(e.target.value)}
-                placeholder="New Feedback"
+                className="w-full mb-2 p-2 rounded bg-white/10"
               />
-              <br />
-              <br />
 
-              <button onClick={() => handleOverride(item._id)}>Save ✅</button>
+              <button
+                onClick={() => handleOverride(item._id)}
+                className="px-3 py-1 bg-green-500 rounded hover:bg-green-600"
+              >
+                Save ✅
+              </button>
+
             </div>
           )}
+
         </div>
       ))}
+
     </div>
-  );
+  </div>
+);
 }
