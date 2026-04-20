@@ -1,39 +1,39 @@
 import { useState } from "react";
 import API from "../api/api";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 export default function Dashboard() {
   const navigate = useNavigate();
+
   const [studentFile, setStudentFile] = useState(null);
   const [teacherFile, setTeacherFile] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
-const handleSubmit = async () => {
-  if (!studentFile || !teacherFile) {
-    alert("Please upload both files ❌");
-    return;
-  }
+  const handleSubmit = async () => {
+    if (!studentFile || !teacherFile) {
+      alert("Please upload both files ❌");
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append("studentFile", studentFile);
-  formData.append("teacherFile", teacherFile);
+    const formData = new FormData();
+    formData.append("studentFile", studentFile);
+    formData.append("teacherFile", teacherFile);
 
-  try {
-    setLoading(true); // 🔥 START LOADING
+    try {
+      setLoading(true);
 
-    const res = await API.post("/full-evaluate", formData);
+      const res = await API.post("/full-evaluate", formData);
+      setResult(res.data.result);
 
-    console.log(res.data);
-    setResult(res.data.result);
-
-  } catch (err) {
-    console.log(err);
-    alert("Upload failed ❌");
-  } finally {
-    setLoading(false); // 🔥 STOP LOADING (IMPORTANT)
-  }
-};
+    } catch (err) {
+      console.log(err);
+      alert("Upload failed ❌");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -41,128 +41,162 @@ const handleSubmit = async () => {
   };
 
   return (
-  <div className="min-h-screen p-6
-                  bg-[linear-gradient(135deg,#0f172a,#020617,#000000)] text-white">
+    <div className="min-h-screen flex flex-col overflow-x-hidden">
 
-    {/* 🔝 HEADER */}
-    <div className="flex justify-between items-center mb-8">
-      <h1 className="text-3xl font-bold">Dashboard 🚀</h1>
+      {/* 🔝 NAVBAR */}
+      <Navbar />
 
-      <button
-        onClick={handleLogout}
-        className="px-4 py-2 rounded-lg 
-                   bg-red-500 hover:bg-red-600 
-                   transition shadow-md"
-      >
-        Logout
-      </button>
-    </div>
+      {/* 🔐 MAIN */}
+      <div className="flex-1 p-6
+                      bg-[radial-gradient(circle_at_top_left,#1e293b,#020617,#000)]
+                      relative overflow-hidden text-white">
 
-    {/* 📂 UPLOAD SECTION */}
-    <div className="grid md:grid-cols-2 gap-6">
+        {/* 🌈 BLOBS */}
+        <div className="absolute w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-3xl top-[-100px] left-[-100px]" />
+        <div className="absolute w-[400px] h-[400px] bg-blue-500/20 rounded-full blur-3xl bottom-[-100px] right-[-100px]" />
 
-      {/* STUDENT FILE */}
-      <div className="bg-white/5 backdrop-blur-lg border border-white/10 
-                      rounded-2xl p-6 text-center
-                      hover:scale-105 transition duration-300">
+        {/* 🔝 HEADER */}
+        <div className="relative z-10 flex justify-between items-center mb-10">
 
-        <h2 className="mb-4 text-lg">Student File 📄</h2>
+          <h1 className="text-3xl font-bold tracking-wide">
+            Dashboard 🚀
+          </h1>
 
-        <input
-          type="file"
-          onChange={(e) => setStudentFile(e.target.files[0])}
-          className="w-full text-sm"
-        />
 
-        {studentFile && (
-          <p className="mt-3 text-green-400 text-sm">
-            {studentFile.name}
-          </p>
-        )}
-      </div>
+        </div>
 
-      {/* TEACHER FILE */}
-      <div className="bg-white/5 backdrop-blur-lg border border-white/10 
-                      rounded-2xl p-6 text-center
-                      hover:scale-105 transition duration-300">
+        {/* 📦 UPLOAD CARDS */}
+        <div className="relative z-10 grid md:grid-cols-2 gap-6">
 
-        <h2 className="mb-4 text-lg">Teacher File 📄</h2>
+          {/* 📄 STUDENT */}
+          <div className="relative group">
 
-        <input
-          type="file"
-          onChange={(e) => setTeacherFile(e.target.files[0])}
-          className="w-full text-sm"
-        />
+            <div className="absolute -inset-1 bg-gradient-to-r 
+                            from-blue-500 via-purple-500 to-pink-500 
+                            blur opacity-20 rounded-2xl" />
 
-        {teacherFile && (
-          <p className="mt-3 text-green-400 text-sm">
-            {teacherFile.name}
-          </p>
-        )}
-      </div>
-    </div>
+            <div className="relative p-6 rounded-2xl
+                            bg-white/10 backdrop-blur-2xl
+                            border border-white/20">
 
-    {/* 🚀 EVALUATE BUTTON */}
-    <div className="mt-8 text-center">
-      <button
-        onClick={handleSubmit}
-        disabled={loading}
-        className="px-8 py-3 rounded-xl font-semibold text-white
-                  bg-gradient-to-r from-blue-500 to-purple-500
-                  hover:from-purple-500 hover:to-pink-500
-                  transition duration-300
-                  shadow-lg shadow-blue-500/30
-                  disabled:opacity-50"
-      >
-        {loading ? "Evaluating... ⏳" : "Evaluate 🚀"}
-      </button>
-    </div>
+              <h2 className="text-lg font-semibold mb-4">
+                Student File 📄
+              </h2>
 
-    {/* ⏳ LOADING */}
-    {loading && (
-      <div className="mt-6 text-center">
-        <p className="animate-pulse text-blue-400">
-          Evaluating... ⏳
-        </p>
-      </div>
-    )}
+              <input
+                type="file"
+                onChange={(e) => setStudentFile(e.target.files[0])}
+                className="w-full text-sm cursor-pointer"
+              />
 
-    {/* 📊 RESULT */}
-    {result && (
-      <div className="mt-10 bg-white/5 backdrop-blur-lg 
-                      border border-white/10 rounded-2xl p-6">
+              {studentFile && (
+                <p className="mt-3 text-green-400 text-sm">
+                  {studentFile.name}
+                </p>
+              )}
 
-        <h2 className="text-xl mb-4">Result 📊</h2>
+            </div>
+          </div>
 
-        <div className="space-y-3">
+          {/* 📄 TEACHER */}
+          <div className="relative group">
 
-          <p>Score: <span className="text-green-400">{result.score}</span></p>
-          <p>Similarity: {result.similarity}%</p>
-          <p>Plagiarism: {result.plagiarism}%</p>
+            <div className="absolute -inset-1 bg-gradient-to-r 
+                            from-purple-500 via-pink-500 to-blue-500 
+                            blur opacity-20 rounded-2xl" />
 
-          <div>
-            <p className="mb-1">Feedback:</p>
-            <p className="text-gray-300 text-sm">
-              {result.feedback}
-            </p>
+            <div className="relative p-6 rounded-2xl
+                            bg-white/10 backdrop-blur-2xl
+                            border border-white/20">
+
+              <h2 className="text-lg font-semibold mb-4">
+                Teacher File 📄
+              </h2>
+
+              <input
+                type="file"
+                onChange={(e) => setTeacherFile(e.target.files[0])}
+                className="w-full text-sm cursor-pointer"
+              />
+
+              {teacherFile && (
+                <p className="mt-3 text-green-400 text-sm">
+                  {teacherFile.name}
+                </p>
+              )}
+
+            </div>
           </div>
 
         </div>
+
+        {/* 🚀 BUTTON */}
+        <div className="relative z-10 mt-10 text-center">
+
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="px-10 py-3 rounded-xl font-semibold text-white
+                       bg-gradient-to-r from-blue-500 to-purple-500
+                       hover:from-purple-500 hover:to-pink-500
+                       transition duration-300
+                       shadow-lg shadow-blue-500/30
+                       hover:shadow-purple-500/50
+                       disabled:opacity-50"
+          >
+            {loading ? "Evaluating... ⏳" : "Evaluate 🚀"}
+          </button>
+
+        </div>
+
+        {/* 📊 RESULT */}
+        {result && (
+          <div className="relative z-10 mt-12 max-w-xl mx-auto">
+
+            <div className="absolute -inset-1 bg-gradient-to-r 
+                            from-green-400 via-blue-500 to-purple-500 
+                            blur opacity-20 rounded-2xl" />
+
+            <div className="relative p-6 rounded-2xl
+                            bg-white/10 backdrop-blur-2xl
+                            border border-white/20 text-center">
+
+              <h2 className="text-xl font-semibold mb-4">
+                Result 📊
+              </h2>
+
+              <p className="text-green-400 text-2xl font-bold">
+                Score: {result.score}
+              </p>
+
+              <p className="mt-2 text-gray-300">
+                {result.feedback}
+              </p>
+
+              <div className="mt-4 text-sm text-gray-400">
+                <p>Similarity: {result.similarity}%</p>
+                <p>Plagiarism: {result.plagiarism}%</p>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* 🔗 HISTORY */}
+        <div className="relative z-10 mt-12 text-center">
+
+          <button
+            onClick={() => navigate("/history")}
+            className="px-6 py-2 rounded-xl text-white
+                       bg-gradient-to-r from-gray-600 to-gray-800
+                       hover:scale-105 transition duration-300"
+          >
+            View History 📜
+          </button>
+
+        </div>
+
       </div>
-    )}
-
-    {/* 📜 HISTORY BUTTON */}
-    <div className="mt-8 text-center">
-      <button
-        onClick={() => navigate("/history")}
-        className="px-6 py-2 rounded-lg 
-                   bg-purple-500 hover:bg-purple-600 
-                   transition"
-      >
-        View History 📜
-      </button>
     </div>
-
-  </div>
-);
+  );
 }
