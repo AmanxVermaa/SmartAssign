@@ -1,5 +1,6 @@
 # 🧠 SmartAssign AI
-
+    AI-powered Answer Evaluation System with Plagiarism & Similarity Detection
+___
 <p align="center">
   <img src="https://img.shields.io/badge/MERN-FullStack-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/AI-Powered-purple?style=for-the-badge" />
@@ -106,7 +107,8 @@ SmartAssign/
 │   ├── controllers/
 │   ├── models/
 │   └── utils/
-🔮 Future Enhancements
+
+🔮 Future Enhancements:-
 📊 Analytics Dashboard (charts & stats)
 🧠 Advanced NLP Evaluation
 ☁️ AWS Deployment (EC2 + S3)
