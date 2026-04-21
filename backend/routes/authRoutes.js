@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
 const Teacher = require("../models/Teacher");
+const auth = require("../middleware/auth");
 
 // SIGNUP
 router.post("/signup", async (req, res) => {
@@ -108,6 +108,10 @@ router.post("/login", async (req, res) => {
     // console.error("LOGIN ERROR:", error);
     res.status(500).json({ error: "Login failed" });
   }
+});
+
+router.get("/me", auth, (req, res) => {
+  res.json({ user: req.user });
 });
 
 module.exports = router;

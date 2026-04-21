@@ -17,8 +17,8 @@ export default function Login() {
       });
 
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("userName", res.data.user?.name || "User");
-      localStorage.setItem("userEmail", res.data.user?.email || "");
+      // localStorage.setItem("userName", res.data.user?.name || "User");
+      // localStorage.setItem("userEmail", res.data.user?.email || "");
 
       alert("Login Successful ✅");
       navigate("/dashboard");
