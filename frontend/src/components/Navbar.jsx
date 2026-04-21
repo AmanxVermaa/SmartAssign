@@ -1,13 +1,36 @@
 import logo from "../assets/logo.png";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
+import API from "../api/api";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef();
-  const userName = localStorage.getItem("userName") || "";
-  const firstLetter = userName.charAt(0).toUpperCase();
+  const token = localStorage.getItem("token");
+
+  // ✅ USER STATE
+  const [user, setUser] = useState(null);
+
+  // 🔥 FETCH USER FROM BACKEND
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await API.get("/auth/me");
+        setUser(res.data.user);
+      } catch (err) {
+        console.log("Navbar user fetch error:", err);
+      }
+    };
+
+    if (token) fetchUser();
+  }, [token]);
+
+  // 🔤 AVATAR LETTER
+  const userName = user?.name || "";
+  const firstLetter = userName
+    ? userName.charAt(0).toUpperCase()
+    : "U";
 
   // 🔥 CLOSE DROPDOWN ON OUTSIDE CLICK
   useEffect(() => {
@@ -24,14 +47,11 @@ export default function Navbar() {
   return (
     <div className="sticky top-0 z-50 w-full">
       {/* 🧊 GLASS BACKGROUND */}
-      <div
-        className="absolute inset-0 
-                      bg-white/5 backdrop-blur-xl 
-                      border-b border-white/10"
-      ></div>
+      <div className="absolute inset-0 bg-white/5 backdrop-blur-xl border-b border-white/10"></div>
 
       {/* 💎 NAV CONTENT */}
       <div className="relative flex items-center justify-between px-6 py-3">
+        
         {/* 🔹 LOGO */}
         <div
           className="flex items-center gap-3 cursor-pointer"
@@ -40,70 +60,70 @@ export default function Navbar() {
           <img
             src={logo}
             alt="logo"
-            className="w-10 h-10 object-contain 
-                       hover:scale-110 transition duration-300"
+            className="w-10 h-10 object-contain hover:scale-110 transition duration-300"
           />
 
-          <h1
-            className="text-lg md:text-xl font-semibold tracking-wide
-                         bg-gradient-to-r from-blue-400 to-purple-400 
-                         bg-clip-text text-transparent"
-          >
+          <h1 className="text-lg md:text-xl font-semibold tracking-wide bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             SmartAssign AI
           </h1>
         </div>
 
         {/* 🔹 RIGHT SIDE */}
         <div className="relative" ref={dropdownRef}>
+          
           {/* 👤 AVATAR */}
-          <div
-            onClick={() => setOpen(!open)}
-            className="w-10 h-10 rounded-full cursor-pointer
-                       bg-gradient-to-r from-blue-500 to-purple-500
-                       flex items-center justify-center text-white font-bold
-                       hover:scale-105 transition"
-          >
-            {firstLetter}
-          </div>
+          {token ? (
+            <div
+              onClick={() => setOpen(!open)}
+              className="w-10 h-10 rounded-full cursor-pointer
+              bg-gradient-to-r from-blue-500 to-purple-500
+              flex items-center justify-center text-white font-bold
+              hover:scale-105 transition"
+            >
+              {firstLetter}
+            </div>
+          ) : (
+            <button
+              onClick={() => navigate("/")}
+              className="px-4 py-2 rounded-lg text-white
+              bg-gradient-to-r from-blue-500 to-purple-500"
+            >
+              Login
+            </button>
+          )}
 
           {/* 🔽 DROPDOWN */}
-          {open && (
-            <div
-              className="absolute right-0 mt-3 w-44 rounded-xl
-                            bg-white/10 backdrop-blur-xl
-                            border border-white/20
-                            shadow-lg overflow-hidden"
-            >
+          {token && open && (
+            <div className="absolute right-0 mt-3 w-44 rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-lg overflow-hidden">
+              
               <p className="px-4 py-2 text-sm text-gray-300 border-b border-white/10">
-                {userName}
+                {userName || "User"}
               </p>
+
               <button
                 onClick={() => navigate("/profile")}
-                className="w-full text-left px-4 py-2 text-sm text-white
-             hover:bg-white/10 transition"
+                className="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/10 transition"
               >
                 Profile 👤
               </button>
 
               <button
                 onClick={() => navigate("/settings")}
-                className="w-full text-left px-4 py-2 text-sm text-white
-             hover:bg-white/10 transition"
+                className="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/10 transition"
               >
                 Settings ⚙️
               </button>
+
               <button
                 onClick={() => navigate("/dashboard")}
-                className="w-full text-left px-4 py-2 text-sm text-white
-                           hover:bg-white/10 transition"
+                className="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/10 transition"
               >
                 Dashboard
               </button>
 
               <button
                 onClick={() => navigate("/history")}
-                className="w-full text-left px-4 py-2 text-sm text-white
-                           hover:bg-white/10 transition"
+                className="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/10 transition"
               >
                 History
               </button>
@@ -115,8 +135,7 @@ export default function Navbar() {
                   localStorage.removeItem("token");
                   navigate("/");
                 }}
-                className="w-full text-left px-4 py-2 text-sm text-red-400
-                           hover:bg-red-500/20 transition"
+                className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-500/20 transition"
               >
                 Logout
               </button>
@@ -126,10 +145,7 @@ export default function Navbar() {
       </div>
 
       {/* ✨ GLOW LINE */}
-      <div
-        className="h-[1px] w-full bg-gradient-to-r 
-                      from-transparent via-purple-500/40 to-transparent"
-      />
+      <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-purple-500/40 to-transparent" />
     </div>
   );
 }
