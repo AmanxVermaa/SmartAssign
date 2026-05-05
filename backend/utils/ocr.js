@@ -1,10 +1,10 @@
-const pdf = require("pdf-poppler");
 const path = require("path");
 const fs = require("fs");
-const Tesseract = require("tesseract.js");
 
 const extractTextFromOCR = async (filePath) => {
   try {
+    const pdf = require("pdf-poppler");
+    const Tesseract = require("tesseract.js");
     const options = {
       format: "png",
       out_dir: path.dirname(filePath),

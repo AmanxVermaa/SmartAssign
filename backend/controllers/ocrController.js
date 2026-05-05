@@ -1,14 +1,10 @@
-const Tesseract = require("tesseract.js");
-const sharp = require("sharp");
 const path = require("path");
 
 const preprocessImage = async (imagePath) => {
-
   if (imagePath.includes("-processed")) {
     return imagePath;
   }
 
-  const path = require("path");
   const sharp = require("sharp");
 
   const dir = path.dirname(imagePath);
@@ -34,6 +30,7 @@ const extractTextFromImage = async (imagePath) => {
 
     console.log(" Running OCR on:", processedImage);
 
+    const Tesseract = require("tesseract.js");
     const result = await Tesseract.recognize(
       processedImage,
       "eng",
