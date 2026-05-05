@@ -20,11 +20,13 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.4.1",
     "multer": "^2.0.2",
-    "nodemon": "^3.1.14",
     "openai": "^6.32.0",
     "pdf-parse": "^1.1.1",
     "pdf-poppler": "^0.2.3",
     "sharp": "^0.34.5",
     "tesseract.js": "^7.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }

@@ -17,7 +17,7 @@ const extractTextFromOCR = async (filePath) => {
     const files = fs.readdirSync(path.dirname(filePath));
 
     const imageFiles = files.filter(file =>
-      file.startsWith(path.basename(filePath, path.extname(file))) &&
+      file.startsWith(path.basename(filePath, path.extname(filePath))) &&
       file.endsWith(".png")
     );
 

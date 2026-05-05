@@ -27,22 +27,20 @@ const convertPDFtoImage = (pdfPath) => {
       }
 
       const files = fs.readdirSync(outputDir);
-
       const imageFiles = files
         .filter(file => file.startsWith("page-") && file.endsWith(".png"))
-        .sort(); 
+        .sort();
 
       if (imageFiles.length === 0) {
-        // console.log("❌ No image found in uploads folder");
+        console.log("❌ No image found in uploads folder");
         return reject(new Error("PDF to Image conversion failed"));
       }
 
-      const imagePaths = imageFiles.map(file => 
+      const imagePaths = imageFiles.map(file =>
         path.join(outputDir, file)
       );
 
-    //   console.log("✅ Image created:", imagePath);
-
+      console.log("✅ Images created:", imagePaths.length);
       resolve(imagePaths);
     });
 
