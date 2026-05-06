@@ -13,7 +13,7 @@ connectDB();
 const app = express();
 
 app.use(cors({
-    origin:"smart-assign-six.vercel.app",
+    origin:"https://smart-assign-six.vercel.app",
     credentials:true
 }));
 app.use(express.json());
